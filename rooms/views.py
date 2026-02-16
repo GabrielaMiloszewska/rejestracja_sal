@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
@@ -26,9 +27,14 @@ def reserve_room(request, pk):
             reservation = form.save(commit=False)
             reservation.room = room
             reservation.organizer = request.user
-            reservation.save()
+            try:
+                reservation.full_clean()
+                reservation.save()
+                messages.success(request, "Reservation created.")
+                return redirect("rooms:detail", pk=room.pk)
 
-            return redirect("rooms:detail", pk=room.pk)
+            except ValidationError as e:
+                form.add_error(None, e)
     else:
         form = ReservationForm()
 
