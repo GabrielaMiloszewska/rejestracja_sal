@@ -57,6 +57,9 @@ class Reservation(models.Model):
         if self.start_at < timezone.now():
             errors['start_at'] = "Reservation start time must be in the future."
 
+        if not self.room_id:
+            return
+
         conflicts = Reservation.objects.filter(
             room=self.room, start_at__range=(self.start_at, self.end_at)
         )

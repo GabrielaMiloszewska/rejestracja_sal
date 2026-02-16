@@ -15,20 +15,26 @@ def room_detail(request, pk):
 
 @login_required
 def reserve_room(request, pk):
-    room = get_object_or_404(Room, pk=pk)
+    room = get_object_or_404(Room, pk=pk, is_active=True)
+
     if request.method == "POST":
         form = ReservationForm(request.POST)
+
         if form.is_valid():
             reservation = form.save(commit=False)
             reservation.room = room
             reservation.organizer = request.user
-            try:
-                reservation.clean()  # walidacja konfliktów
-                reservation.save()
-                messages.success(request, "Reservation successfully created!")
-                return redirect("rooms:detail", pk=room.pk)
-            except Exception as e:
-                messages.error(request, e)
+            reservation.save()
+
+            return redirect("rooms:detail", pk=room.pk)
     else:
         form = ReservationForm()
-    return render(request, "rooms/reserve_room.html", {"room": room, "form": form})
+
+    return render(
+        request,
+        "rooms/reserve_room.html",
+        {
+            "form": form,
+            "room": room,
+        },
+    )
