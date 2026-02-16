@@ -57,3 +57,26 @@ def cancel_reservation(request, pk):
     messages.success(request, "Reservation cancelled.")
 
     return redirect("rooms:my_reservations")
+
+@login_required
+def edit_reservation(request, pk):
+    reservation = get_object_or_404(
+        Reservation,
+        pk=pk,
+        organizer=request.user
+    )
+
+    if request.method == "POST":
+        form = ReservationForm(request.POST, instance=reservation)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Reservation updated.")
+            return redirect("rooms:my_reservations")
+    else:
+        form = ReservationForm(instance=reservation)
+
+    return render(
+        request,
+        "rooms/reservation_form.html",
+        {"form": form, "reservation": reservation},
+    )

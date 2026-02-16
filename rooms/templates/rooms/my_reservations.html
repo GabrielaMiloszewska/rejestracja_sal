@@ -10,7 +10,8 @@
         <th>Title</th>
         <th>From</th>
         <th>To</th>
-        <th>Action</th>
+        <th></th>
+        <th></th>
     </tr>
 
     {% for r in reservations %}
@@ -23,6 +24,12 @@
         <td>{{ r.title }}</td>
         <td>{{ r.start_at }}</td>
         <td>{{ r.end_at }}</td>
+        <td>
+            <a href="{% url 'rooms:edit_reservation' r.pk %}"
+               class="btn btn-sm btn-warning">
+                Edit
+            </a>
+        </td>
         <td>
             <form method="post"
                   action="{% url 'rooms:cancel_reservation' r.pk %}">
