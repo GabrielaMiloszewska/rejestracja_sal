@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
+
 from .models import Room, Reservation
 from .forms import ReservationForm
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 def room_list(request):
@@ -38,3 +39,15 @@ def reserve_room(request, pk):
             "room": room,
         },
     )
+
+@login_required
+def my_reservations(request):
+    reservations = Reservation.objects.filter(
+        organizer=request.user,
+        start_at__gte=timezone.now(),
+        status=Reservation.Status.ACTIVE,
+    ).order_by("start_at")
+
+    return render(request, "rooms/my_reservations.html", {
+        "reservations": reservations
+    })

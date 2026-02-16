@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My reservations</h2>
+
+{% if reservations %}
+<table class="table">
+    <tr>
+        <th>Room</th>
+        <th>Title</th>
+        <th>From</th>
+        <th>To</th>
+    </tr>
+
+    {% for r in reservations %}
+    <tr>
+        <td>
+            <a href="{% url 'rooms:detail' r.room.pk %}">
+                {{ r.room.name }}
+            </a>
+        </td>
+        <td>{{ r.title }}</td>
+        <td>{{ r.start_at }}</td>
+        <td>{{ r.end_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No upcoming reservations.</p>
+{% endif %}
+
+{% endblock %}

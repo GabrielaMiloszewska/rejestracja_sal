@@ -12,17 +12,15 @@
 <div class="container">
     <header>
 
-        <h1>>>>>>>>>>>>>>>>>ROOM REGISTRATION>>>>>>>>>>>>>>></h1>
+        <h1>>>>>>>>>>>>>>>>>ROOM RESERVATION>>>>>>>>>>>>>>></h1>
 
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 
             <div class="container-fluid">
                 <ul class="nav">
                     <li class="nav-item"><a class="nav-link" href="{% url 'rooms:list' %}">Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rooms:my_reservations' %}">My reservations</a></li>
                     <li class="nav-item"><a class="nav-link active" href="{% url 'login' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="javascript:void(0)">About</a></li>
-
-                    <li class="nav-item "><a class="nav-link" href="#">Logout</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
