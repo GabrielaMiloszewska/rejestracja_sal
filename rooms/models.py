@@ -51,22 +51,27 @@ class Reservation(models.Model):
 
     def clean(self):
         errors = {}
-        if self.start_at >= self.end_at:
-            errors['start_at'] = "Start time must be before end time."
+        if self.start_at and self.end_at: # sprawdzamy, czy daty nie są None zanim wykonamy porównanie, None są gdy formularz nie przekazuje poprawnie wartości -> wtedy Django porównywałby None >= None, stą ta linijka najpierw
+            if self.start_at >= self.end_at:
+                errors['start_at'] = "Start time must be before end time."
 
-        if self.start_at < timezone.now():
-            errors['start_at'] = "Reservation start time must be in the future."
+            if self.start_at < timezone.now():
+                errors['start_at'] = "Reservation start time must be in the future."
 
-        if not self.room_id:
-            return
+            if not self.room_id:
+                return
 
-        conflicts = Reservation.objects.filter(
-            room=self.room, start_at__range=(self.start_at, self.end_at)
-        )
-        if self.pk:
-            conflicts = conflicts.exclude(pk=self.pk)
-        if conflicts.exists():
-            errors['__all__'] = "Reservation conflicts with another reservation."
+            conflicts = Reservation.objects.filter(room=self.room, start_at__range=(self.start_at, self.end_at)) # sprawdzamy konflikty
+            if self.pk:
+                conflicts = conflicts.exclude(pk=self.pk)
+            if conflicts.exists():
+                errors['__all__'] = "Reservation conflicts with another reservation."
+
+        else: # jeśli brak którejkolwiek daty (czyli jeśli jest None), zgłaszamy komunikat błędu.
+            if not self.start_at:
+                errors['start_at'] = "Start date/time is required."
+            if not self.end_at:
+                errors['end_at'] = "End date/time is required."
 
         if errors:
             raise ValidationError(errors)
