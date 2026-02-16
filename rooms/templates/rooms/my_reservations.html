@@ -10,6 +10,7 @@
         <th>Title</th>
         <th>From</th>
         <th>To</th>
+        <th>Action</th>
     </tr>
 
     {% for r in reservations %}
@@ -22,6 +23,15 @@
         <td>{{ r.title }}</td>
         <td>{{ r.start_at }}</td>
         <td>{{ r.end_at }}</td>
+        <td>
+            <form method="post"
+                  action="{% url 'rooms:cancel_reservation' r.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-danger">
+                    Cancel
+                </button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>

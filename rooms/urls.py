@@ -8,4 +8,5 @@ urlpatterns = [
     path("<int:pk>/", views.room_detail, name="detail"),
     path("<int:pk>/reserve/", views.reserve_room, name="reserve"),
     path("my/", views.my_reservations, name="my_reservations"),
+    path("reservation/<int:pk>/cancel/", views.cancel_reservation, name="cancel_reservation"),
 ]

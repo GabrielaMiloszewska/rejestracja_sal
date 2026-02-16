@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
@@ -31,14 +32,7 @@ def reserve_room(request, pk):
     else:
         form = ReservationForm()
 
-    return render(
-        request,
-        "rooms/reserve_room.html",
-        {
-            "form": form,
-            "room": room,
-        },
-    )
+    return render(request,"rooms/reserve_room.html", {"form": form, "room": room,},)
 
 @login_required
 def my_reservations(request):
@@ -48,6 +42,18 @@ def my_reservations(request):
         status=Reservation.Status.ACTIVE,
     ).order_by("start_at")
 
-    return render(request, "rooms/my_reservations.html", {
-        "reservations": reservations
-    })
+    return render(request, "rooms/my_reservations.html", {"reservations": reservations})
+
+
+@login_required
+def cancel_reservation(request, pk):
+    reservation = get_object_or_404(
+        Reservation,
+        pk=pk,
+        organizer=request.user
+    )
+
+    reservation.cancel()
+    messages.success(request, "Reservation cancelled.")
+
+    return redirect("rooms:my_reservations")
